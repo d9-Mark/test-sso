@@ -1,10 +1,15 @@
-// app/api/auth/callback/route.ts
+// app/api/callback/route.ts
 import { type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
-    console.log("Duo callback data:", data);
+    const formData = await request.formData();
+    const samlResponse = formData.get("SAMLResponse");
+    console.log("Duo SAML Response:", samlResponse);
+
+    // You can decode the base64 SAML response if needed
+    // const decodedSAML = Buffer.from(samlResponse as string, 'base64').toString('utf-8');
+    // console.log("Decoded SAML:", decodedSAML);
 
     return Response.json({ status: "success" });
   } catch (error) {
@@ -16,7 +21,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle both POST and GET as Duo might use either
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   console.log("Duo callback params:", Object.fromEntries(searchParams));
